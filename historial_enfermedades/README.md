@@ -31,7 +31,7 @@ Esta vista solicitará la información de la receta:
 
 ## Notas
 
-- [ ] La informacion debe ser persistente en el dispositivo (usar package ObjectBox)
+- [ ] La informacion debe ser persistente en el dispositivo (usar package Hive)
 - [ ] Las credenciales para el inicio de sesión serán locales (sin servicios web) y deberán ser:
   - **Email:** *jhon@mail.com*
   - **Contraseña:** *77@1$*
