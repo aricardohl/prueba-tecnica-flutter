@@ -104,6 +104,7 @@ class _LoginPageStateClass extends State<Login> {
       if (msg != null) {
         toastErrorMessage(context, msg);
       }
+      toastErrorMessage(context, "Ingresa los campos solicitados");
       return false;
     }
     return true;
