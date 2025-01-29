@@ -99,10 +99,12 @@ class _LoginPageStateClass extends State<Login> {
       if (_newEmail == 'jhon@mail.com' && _newPassword == "77@1\$") {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ListadoPage()));
+            return true;
       }
       var msg = _validateEmail(_newEmail);
       if (msg != null) {
         toastErrorMessage(context, msg);
+        return false;
       }
       toastErrorMessage(context, "Ingresa los campos solicitados");
       return false;
