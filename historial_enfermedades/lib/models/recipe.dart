@@ -1,12 +1,26 @@
+import 'package:objectbox/objectbox.dart';
+
+@Entity()
 class Recipe {
+  int id = 0; // ObjectBox requiere un campo de ID autoincremental
+
+  @Property(type: PropertyType.date) // Indica que es un DateTime
   DateTime date;
-  String pacient; // maxlength: 150
-  String doctor; // maxlength: 150
-  String phone; // maxlength: 10
-  String discomfort; // maxlength: 1024
-  String img; // Reference to img captured
+
+  @Index() // Mejora las búsquedas en este campo
+  String pacient; // Máx. 150 caracteres
+
+  String doctor; // Máx. 150 caracteres
+
+  @Index()
+  String phone; // Máx. 10 caracteres
+
+  String discomfort; // Máx. 1024 caracteres
+
+  String img; // Referencia a la imagen capturada
 
   Recipe({
+    this.id = 0, // El ID se autogenera en ObjectBox
     required this.date,
     required this.pacient,
     required this.doctor,
@@ -23,13 +37,13 @@ class Recipe {
       phone: recipe["phone"],
       discomfort: recipe["discomfort"],
       img: recipe["img"],
-      );
+    );
   }
-  
 
-  Map toMap() {
-    return{
-      "date": date,
+ Map toMap() {
+    return {
+      "id": id,
+      "date": date, // Convertimos DateTime a timestamp
       "pacient": pacient,
       "doctor": doctor,
       "phone": phone,
@@ -37,5 +51,4 @@ class Recipe {
       "img": img,
     };
   }
-
 }
