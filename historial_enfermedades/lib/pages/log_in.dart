@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:historial_enfermedades/pages/Listado.dart';
+import 'package:historial_enfermedades/pages/listado.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -13,7 +13,6 @@ class Login extends StatefulWidget {
 class _LoginPageStateClass extends State<Login> {
   late double _deviceHeight;
   late double _deviceWidth;
-
 
   //Por esto es clase Stateful
   String? _newEmail;
@@ -54,8 +53,8 @@ class _LoginPageStateClass extends State<Login> {
                     Color.fromARGB(255, 4, 65, 116))),
             onPressed: () {
               // Use function handleButtonLogin
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) =>  Listado()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => ListadoPage()));
             },
             child:
                 Text(style: TextStyle(color: Colors.white), 'Iniciar Sesion')));
