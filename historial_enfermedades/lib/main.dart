@@ -11,15 +11,15 @@ void main() async {
    final directory = await getApplicationDocumentsDirectory();
   WidgetsFlutterBinding.ensureInitialized();
   await ObjectBoxHelper.init(directory.path);
-  final recipe = Recipe(
-  date: DateTime.now(),
-  pacient: "Pepe Perez",
-  doctor: "Dr. Guzman",
-  phone: "5551234567",
-  discomfort: "Dolor de cabeza",
-  img: "path/to/image.jpg",
-  );
-  ObjectBoxHelper.recipeBox.put(recipe);
+  // final recipe = Recipe(
+  // date: DateTime.now(),
+  // pacient: "Pepe Perez",
+  // doctor: "Dr. Guzman",
+  // phone: "5551234567",
+  // discomfort: "Dolor de cabeza",
+  // img: "path/to/image.jpg",
+  // );
+  // ObjectBoxHelper.recipeBox.put(recipe);
   runApp(const MyApp());
 }
 
