@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:historial_enfermedades/pages/listado.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:historial_enfermedades/pages/widgets/errorWidget.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -38,7 +38,6 @@ class _LoginPageStateClass extends State<Login> {
   @override
   void initState() {
     super.initState();
-
     emailController.addListener(_handleEmailChange);
     passwordController.addListener(_handlePasswordChange);
   }
@@ -87,8 +86,6 @@ class _LoginPageStateClass extends State<Login> {
                     Color.fromARGB(255, 4, 65, 116))),
             onPressed: () {
               handleButtonLogin();
-              // Navigator.push(context,
-              //     MaterialPageRoute(builder: (context) => ListadoPage()));
             },
             child:
                 Text(style: TextStyle(color: Colors.white), 'Iniciar Sesion')));
@@ -97,7 +94,7 @@ class _LoginPageStateClass extends State<Login> {
   bool handleButtonLogin() {
     if (_newEmail != null && _newPassword != null) {
       if (_newEmail == 'jhon@mail.com' && _newPassword == "77@1\$") {
-        Navigator.push(
+        Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => ListadoPage()));
             return true;
       }
@@ -106,21 +103,10 @@ class _LoginPageStateClass extends State<Login> {
         toastErrorMessage(context, msg);
         return false;
       }
-      toastErrorMessage(context, "Ingresa los campos solicitados");
-      return false;
     }
     return true;
   }
 
-  Future<bool?> toastErrorMessage(BuildContext context, msg) {
-    return Fluttertoast.showToast(
-        msg: msg,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,6 +142,8 @@ class _LoginPageStateClass extends State<Login> {
               )
             ],
           ),
-        )));
+        )
+      )
+    );
   }
 }
