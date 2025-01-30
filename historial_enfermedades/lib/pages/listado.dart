@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:historial_enfermedades/models/recipe.dart';
 import 'package:historial_enfermedades/pages/registro.dart';
-import 'package:historial_enfermedades/tools/objectBoxHelper.dart';
+import 'package:historial_enfermedades/services/objectBoxHelper.dart';
 
 class ListadoPage extends StatefulWidget {
   ListadoPage();
@@ -30,14 +30,23 @@ class _ListadoPageStateClass extends State<ListadoPage> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Listado'),
       ),
-      body: ListadoView(),
+      body: listadoView(),
       floatingActionButton: registerButton(),
     );
   }
 
-  Widget ListadoView() {
+   String truncateText(String text, int maxLength) {
+    if (text.length <= maxLength) {
+      return text;
+    } else {
+      return '${text.substring(0, maxLength)}...';
+    }
+  }
+
+  Widget listadoView() {
     return FutureBuilder(
       future: getRecipes(),
       builder: (context, AsyncSnapshot<List<Recipe>> snapshot) {
@@ -55,9 +64,12 @@ class _ListadoPageStateClass extends State<ListadoPage> {
                       height: _deviceHeight * 0.1,
                     ),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Paciente: ${recipe.pacient}'),
-                        Text('Malestar: ${recipe.discomfort}'),
+                        Text(
+                          overflow: TextOverflow.ellipsis,
+                          'Malestar: ${truncateText(recipe.discomfort, 13)}'),
                         Text('Doctor: ${recipe.doctor}'),
                         Text('Tel: ${recipe.phone}'),
                       ],
