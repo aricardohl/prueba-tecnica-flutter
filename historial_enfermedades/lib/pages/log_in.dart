@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:historial_enfermedades/pages/listado.dart';
+import 'package:historial_enfermedades/pages/widgets/errorWidget.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -14,23 +15,51 @@ class _LoginPageStateClass extends State<Login> {
   late double _deviceHeight;
   late double _deviceWidth;
 
+  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
   //Por esto es clase Stateful
   String? _newEmail;
   String? _newPassword;
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Ingresa un email';
+    }
+    if (!emailRegex.hasMatch(value)) {
+      return 'Ingresa un email valido';
+    } else {
+      return null;
+    }
+  }
 
   _LoginPageStateClass();
 
   @override
   void initState() {
     super.initState();
+    emailController.addListener(_handleEmailChange);
+    passwordController.addListener(_handlePasswordChange);
+  }
+
+  void _handlePasswordChange() {
+    _newPassword = passwordController.text;
+  }
+
+  void _handleEmailChange() {
+    _newEmail = emailController.text;
   }
 
   Widget textFieldEmail(BuildContext context) {
     return SizedBox(
         width: _deviceWidth * 0.75,
         child: TextField(
-          decoration:
-              InputDecoration(border: OutlineInputBorder(), labelText: 'Email'),
+          maxLength: 100,
+          controller: emailController,
+          decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Email',
+              hintText: 'Ingresa tu email'),
         ));
   }
 
@@ -38,9 +67,13 @@ class _LoginPageStateClass extends State<Login> {
     return SizedBox(
         width: _deviceWidth * 0.75,
         child: TextField(
+          maxLength: 100,
+          controller: passwordController,
           obscureText: true,
           decoration: InputDecoration(
-              border: OutlineInputBorder(), labelText: 'Contraseña'),
+              border: OutlineInputBorder(),
+              labelText: 'Contraseña',
+              hintText: 'Ingresa tu contraseña'),
         ));
   }
 
@@ -52,18 +85,28 @@ class _LoginPageStateClass extends State<Login> {
                 backgroundColor: WidgetStatePropertyAll<Color>(
                     Color.fromARGB(255, 4, 65, 116))),
             onPressed: () {
-              // Use function handleButtonLogin
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => ListadoPage()));
+              handleButtonLogin();
             },
             child:
                 Text(style: TextStyle(color: Colors.white), 'Iniciar Sesion')));
   }
 
   bool handleButtonLogin() {
-    // Handle login asking database for email and password
+    if (_newEmail != null && _newPassword != null) {
+      if (_newEmail == 'jhon@mail.com' && _newPassword == "77@1\$") {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => ListadoPage()));
+            return true;
+      }
+      var msg = _validateEmail(_newEmail);
+      if (msg != null) {
+        toastErrorMessage(context, msg);
+        return false;
+      }
+    }
     return true;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +142,8 @@ class _LoginPageStateClass extends State<Login> {
               )
             ],
           ),
-        )));
+        )
+      )
+    );
   }
 }
