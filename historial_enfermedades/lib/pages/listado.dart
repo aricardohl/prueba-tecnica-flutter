@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:historial_enfermedades/models/recipe.dart';
 import 'package:historial_enfermedades/pages/registro.dart';
@@ -15,12 +17,16 @@ class ListadoPage extends StatefulWidget {
 class _ListadoPageStateClass extends State<ListadoPage> {
   late double _deviceHeight;
   late double _deviceWidth;
+  late Future<List<Recipe>> _recipes;
+
+  String _searchQuery = '';
 
   _ListadoPageStateClass();
 
   @override
   void initState() {
     super.initState();
+    _recipes = getRecipes();
   }
 
   @override
@@ -32,13 +38,30 @@ class _ListadoPageStateClass extends State<ListadoPage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Listado'),
+        bottom: PreferredSize(
+            preferredSize: Size.fromHeight(60.0),
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value.toLowerCase();
+                  });
+                },
+                decoration: InputDecoration(
+                  hintText: 'Buscar',
+                ),
+              
+              ),
+              
+            )),
       ),
       body: listadoView(),
       floatingActionButton: registerButton(),
     );
   }
 
-   String truncateText(String text, int maxLength) {
+  String truncateText(String text, int maxLength) {
     if (text.length <= maxLength) {
       return text;
     } else {
@@ -48,28 +71,50 @@ class _ListadoPageStateClass extends State<ListadoPage> {
 
   Widget listadoView() {
     return FutureBuilder(
-      future: getRecipes(),
+      future: _recipes,
       builder: (context, AsyncSnapshot<List<Recipe>> snapshot) {
         if (snapshot.hasData) {
+          final filteredRecipes = snapshot.data!.where((recipe) {
+            final pacient = recipe.pacient.toLowerCase();
+            final doctor = recipe.doctor.toLowerCase();
+            final discomfort = recipe.discomfort.toLowerCase();
+            return pacient.contains(_searchQuery) || doctor.contains(_searchQuery) || discomfort.contains(_searchQuery);
+          }).toList();
           return ListView.builder(
-            itemCount: snapshot.data!.length,
+            itemCount: filteredRecipes.length,
             itemBuilder: (context, index) {
-              final recipe = snapshot.data![index];
+              final recipe = filteredRecipes[index];
               return ListTile(
                 subtitle: Row(
                   children: [
-                    Image.asset(
-                      './lib/assets/doctor.png',
-                      width: _deviceWidth * 0.45,
-                      height: _deviceHeight * 0.1,
+                    if (recipe.img == './lib/assets/doctor.png')
+                      Flexible(
+                        child: Image.asset(
+                          recipe.img,
+                          width: _deviceWidth * 0.35,
+                          height: _deviceHeight * .15,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    else
+                      Flexible(
+                        child: Image.file(
+                          File(recipe.img),
+                          width: _deviceWidth * .35,
+                          height: _deviceHeight * .15,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    SizedBox(
+                      width: 10,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Paciente: ${recipe.pacient}'),
                         Text(
-                          overflow: TextOverflow.ellipsis,
-                          'Malestar: ${truncateText(recipe.discomfort, 13)}'),
+                            overflow: TextOverflow.ellipsis,
+                            'Malestar: ${truncateText(recipe.discomfort, 13)}'),
                         Text('Doctor: ${recipe.doctor}'),
                         Text('Tel: ${recipe.phone}'),
                       ],
