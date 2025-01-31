@@ -49,6 +49,7 @@ class _ListadoPageStateClass extends State<ListadoPage> {
                   });
                 },
                 decoration: InputDecoration(
+                  counterText: '',
                   hintText: AppStrings.searchText,
                 ),
               

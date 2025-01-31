@@ -57,6 +57,7 @@ class _LoginPageStateClass extends State<Login> {
           maxLength: 100,
           controller: emailController,
           decoration: InputDecoration(
+              counterText: '',
               border: OutlineInputBorder(),
               labelText: AppStrings.labelEmail,
               hintText: AppStrings.hintEmail),
@@ -70,6 +71,7 @@ class _LoginPageStateClass extends State<Login> {
           controller: passwordController,
           obscureText: true,
           decoration: InputDecoration(
+              counterText: '',
               border: OutlineInputBorder(),
               labelText: AppStrings.labelPassword,
               hintText: AppStrings.hintPassword),

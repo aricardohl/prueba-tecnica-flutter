@@ -129,6 +129,7 @@ class _RegistroPageStateClass extends State<RegistroPage> {
               onSubmitted: (value) => _checkRegex(value),
               controller: _pacientController,
               decoration: InputDecoration(
+                counterText: '',
                 border: UnderlineInputBorder(),
                 labelText: AppStrings.pacientLabel,
               ),
@@ -139,6 +140,7 @@ class _RegistroPageStateClass extends State<RegistroPage> {
               onSubmitted: (value) => _checkRegex(value),
               controller: _doctorController,
               decoration: InputDecoration(
+                counterText: '',
                 border: UnderlineInputBorder(),
                 labelText: AppStrings.doctorLabel,
               ),
@@ -150,6 +152,7 @@ class _RegistroPageStateClass extends State<RegistroPage> {
               keyboardType: TextInputType.phone,
               controller: _phoneController,
               decoration: InputDecoration(
+                counterText: '',
                 border: UnderlineInputBorder(),
                 labelText: AppStrings.phoneLabel,
               ),
@@ -159,6 +162,7 @@ class _RegistroPageStateClass extends State<RegistroPage> {
             TextField(
               controller: _discomfortController,
               decoration: InputDecoration(
+                counterText: '',
                 border: UnderlineInputBorder(),
                 labelText: AppStrings.discomfortLabel,
               ),
@@ -247,6 +251,7 @@ class _RegistroPageStateClass extends State<RegistroPage> {
         child: TextField(
       controller: _dateController,
       decoration: InputDecoration(
+        counterText: '',
         border: UnderlineInputBorder(),
         suffixIcon: Icon(Icons.calendar_today),
         labelText: label,
