@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:historial_enfermedades/constants/strings.dart';
 import 'package:historial_enfermedades/models/recipe.dart';
 import 'package:historial_enfermedades/pages/_listado.dart';
 import 'package:historial_enfermedades/pages/takePictureScreen.dart';
 import 'package:historial_enfermedades/pages/widgets/errorWidget.dart';
+import 'package:historial_enfermedades/pages/widgets/image_widget.dart';
 import 'package:historial_enfermedades/services/object_box_helper.dart';
 
 class RegistroPage extends StatefulWidget {
@@ -33,8 +32,8 @@ class _RegistroPageStateClass extends State<RegistroPage> {
   // Regex to validate phone
   final phoneRegex = RegExp(r'^\d{10}$');
 
-  DateTime? _newDate;
   String? _newPhone;
+  DateTime? _newDate;
   String? _newError;
   String _newImg = AppStrings.pathToDoctorImage;
 
@@ -67,13 +66,6 @@ class _RegistroPageStateClass extends State<RegistroPage> {
   @override
   void initState() {
     super.initState();
-    _phoneController.addListener(_handlePhoneChange);
-  }
-
-  void _handlePhoneChange() {
-    setState(() {
-      _newPhone = _phoneController.text;
-    });
   }
 
   bool _checkRegex(String value) {
@@ -180,26 +172,15 @@ class _RegistroPageStateClass extends State<RegistroPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => TakePictureScreen()));
-                    }, // Add function to take a picture
+                    },
                     child: Text(
                         style: const TextStyle(color: Colors.white),
                         AppStrings.takePhotoRecipe)),
                 SizedBox(height: 20),
-                // Add a preview of the image
                 if (_newImg == AppStrings.pathToDoctorImage)
-                  Image.asset(
-                    _newImg,
-                    fit: BoxFit.cover,
-                    width: _deviceWidth * .45,
-                    height: _deviceHeight * .15,
-                  )
+                  imageAsset(_newImg, _deviceWidth, _deviceHeight)
                 else
-                  Image.file(
-                    File(_newImg),
-                    fit: BoxFit.cover,
-                    width: _deviceWidth * .45,
-                    height: _deviceHeight * .15,
-                  )
+                  imageFile(_newImg, _deviceWidth, _deviceHeight)
               ],
             ),
             SizedBox(height: 20),
