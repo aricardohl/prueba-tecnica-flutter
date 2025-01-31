@@ -1,18 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:historial_enfermedades/constants/strings.dart';
 import 'package:historial_enfermedades/models/recipe.dart';
-import 'package:historial_enfermedades/pages/listado.dart';
+import 'package:historial_enfermedades/pages/_listado.dart';
 import 'package:historial_enfermedades/pages/takePictureScreen.dart';
 import 'package:historial_enfermedades/pages/widgets/errorWidget.dart';
-import 'package:historial_enfermedades/services/objectBoxHelper.dart';
+import 'package:historial_enfermedades/services/object_box_helper.dart';
 
 class RegistroPage extends StatefulWidget {
-  final String? picturePath;
-  const RegistroPage({
-    Key? key,
-    this.picturePath,
-  });
+
+  const RegistroPage();
 
   @override
   State<StatefulWidget> createState() {
@@ -36,11 +34,9 @@ class _RegistroPageStateClass extends State<RegistroPage> {
   final phoneRegex = RegExp(r'^\d{10}$');
 
   DateTime? _newDate;
-  String? _newPacient;
-  String? _newDoctor;
   String? _newPhone;
   String? _newError;
-  String _newImg = './lib/assets/doctor.png'; // Use for path to image
+  String _newImg = AppStrings.pathToDoctorImage;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -80,28 +76,28 @@ class _RegistroPageStateClass extends State<RegistroPage> {
     });
   }
 
-  void _checkRegex(value) {
-    value = _doctorController.text;
-    if (regex.hasMatch(value!)) {
-      _newError = null;
+  bool _checkRegex(String value) {
+    if(value == '') {
+      toastErrorMessage(context, AppStrings.fillAllFields);
+      return false;
+    }
+    if (regex.hasMatch(value)) {
+      return true;
     } else {
-      _newError = 'Ingresa un nombre valido';
+      _newError = AppStrings.validNameError;
       toastErrorMessage(context, _newError);
+      return false;
     }
   }
 
-  void _checkPhoneRegex(phone) {
-    if (phone == null || phone.length != 10) {
-      _newError = 'Ingresa un telefono valido';
+  bool _checkPhoneRegex(phone) {
+    if (phone.isEmpty || phone.length != 10) {
+      _newError = AppStrings.validPhoneError;
       toastErrorMessage(context, _newError);
+      return false;
     }
-    if (phone != null && !phoneRegex.hasMatch(phone)) {
-      setState(() {
-        _newError = null;
-        _newPhone = _phoneController.text;
-        _newPhone = _formatPhone(_newPhone!);
-      });
-    }
+    _newPhone = _formatPhone(phone);
+    return true;
   }
 
   @override
@@ -113,7 +109,7 @@ class _RegistroPageStateClass extends State<RegistroPage> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text('Registro'),
+          title: const Text(AppStrings.registerLabel),
         ),
         body: SingleChildScrollView(
           child: registroView(),
@@ -122,86 +118,90 @@ class _RegistroPageStateClass extends State<RegistroPage> {
 
   Widget registroView() {
     return Form(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          textFieldDate(context, 'Fecha'),
-          SizedBox(height: 20),
-          TextField(
-            onSubmitted: (value) => _checkRegex(value),
-            controller: _pacientController,
-            decoration: InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: 'Paciente',
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            textFieldDate(context, AppStrings.dateLabel),
+            SizedBox(height: 20),
+            TextField(
+              onSubmitted: (value) => _checkRegex(value),
+              controller: _pacientController,
+              decoration: InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: AppStrings.pacientLabel,
+              ),
+              maxLength: 150,
             ),
-            maxLength: 150,
-          ),
-          SizedBox(height: 20),
-          TextField(
-            onSubmitted: (value) => _checkRegex(value),
-            controller: _doctorController,
-            decoration: InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: 'Doctor',
+            SizedBox(height: 20),
+            TextField(
+              onSubmitted: (value) => _checkRegex(value),
+              controller: _doctorController,
+              decoration: InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: AppStrings.doctorLabel,
+              ),
+              maxLength: 150,
             ),
-            maxLength: 150,
-          ),
-          SizedBox(height: 20),
-          TextField(
-            onChanged: (value) => _formatPhone(value),
-            keyboardType: TextInputType.phone,
-            controller: _phoneController,
-            decoration: InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: 'Telefono',
+            SizedBox(height: 20),
+            TextField(
+              onChanged: (value) => _formatPhone(value),
+              keyboardType: TextInputType.phone,
+              controller: _phoneController,
+              decoration: InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: AppStrings.phoneLabel,
+              ),
+              maxLength: 10,
             ),
-            maxLength: 10,
-          ),
-          SizedBox(height: 20),
-          TextField(
-            controller: _discomfortController,
-            decoration: InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: 'Malestar, Sintomas',
+            SizedBox(height: 20),
+            TextField(
+              controller: _discomfortController,
+              decoration: InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: AppStrings.discomfortLabel,
+              ),
+              maxLength: 1024,
             ),
-            maxLength: 1024,
-          ),
-          // Image field to take a picture of reipe and save the path reference
-          SizedBox(height: 20),
-          Column(
-            children: [
-              TextButton(
-                  style: const ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll<Color>(
-                          Color.fromARGB(255, 4, 65, 116))),
-                  onPressed: () async {
-                    _newImg = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TakePictureScreen()));
-                  }, // Add function to take a picture
-                  child: Text(
-                      style: const TextStyle(color: Colors.white),
-                      'Capturar Receta')),
-              SizedBox(height: 20),
-              // Add a preview of the image
-              if(_newImg == './lib/assets/doctor.png') Image.asset(
-                _newImg,
-                fit: BoxFit.cover,
-                width: _deviceWidth * .45,
-                height: _deviceHeight * .15,
-              ) else
-              Image.file(
-                File(_newImg),
-                fit: BoxFit.cover,
-                width: _deviceWidth * .45,
-                height: _deviceHeight * .15,
-              )
-            ],
-          ),
-          SizedBox(height: 20),
-          registerButton(),
-        ],
+            SizedBox(height: 20),
+            Column(
+              children: [
+                TextButton(
+                    style: const ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll<Color>(
+                            Color.fromARGB(255, 4, 65, 116))),
+                    onPressed: () async {
+                      _newImg = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TakePictureScreen()));
+                    }, // Add function to take a picture
+                    child: Text(
+                        style: const TextStyle(color: Colors.white),
+                        AppStrings.takePhotoRecipe)),
+                SizedBox(height: 20),
+                // Add a preview of the image
+                if (_newImg == AppStrings.pathToDoctorImage)
+                  Image.asset(
+                    _newImg,
+                    fit: BoxFit.cover,
+                    width: _deviceWidth * .45,
+                    height: _deviceHeight * .15,
+                  )
+                else
+                  Image.file(
+                    File(_newImg),
+                    fit: BoxFit.cover,
+                    width: _deviceWidth * .45,
+                    height: _deviceHeight * .15,
+                  )
+              ],
+            ),
+            SizedBox(height: 20),
+            registerButton(),
+          ],
+        ),
       ),
     );
   }
@@ -213,30 +213,33 @@ class _RegistroPageStateClass extends State<RegistroPage> {
                 backgroundColor: WidgetStatePropertyAll<Color>(
                     Color.fromARGB(255, 4, 65, 116))),
             onPressed: () {
-              // Validate the fields
-              _checkPhoneRegex(_newPhone);
-              _checkRegex(_newPacient);
-              _checkRegex(_newDoctor);
-
-              // Add the recipe to the database
-              var recipe = Recipe(
-                pacient: _pacientController.text,
-                doctor: _doctorController.text,
-                phone: _phoneController.text,
-                discomfort: _discomfortController.text,
-                date: _newDate!,
-                img: _newImg,
-              );
-
-              if (_newError == null) {
-                ObjectBoxHelper.recipeBox.put(recipe);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ListadoPage()));
-              } else {
-                toastErrorMessage(context, _newError);
-              }
+              onRegisterPressed();
             },
-            child: Text(style: TextStyle(color: Colors.white), 'Registrar')));
+            child: Text(
+                style: TextStyle(color: Colors.white), AppStrings.saveLabel)));
+  }
+
+  void onRegisterPressed() {
+    setState(() {
+      _newError = null;
+      bool isValid =  _checkRegex(_pacientController.text) &&
+                      _checkRegex(_doctorController.text) &&
+                      _checkPhoneRegex(_phoneController.text);
+
+      if (!isValid) return;
+
+      var recipe = Recipe(
+        pacient: _pacientController.text,
+        doctor: _doctorController.text,
+        phone: _phoneController.text,
+        discomfort: _discomfortController.text,
+        date: _newDate!,
+        img: _newImg,
+      );
+      ObjectBoxHelper.recipeBox.put(recipe);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => ListadoPage()));
+    });
   }
 
   Widget textFieldDate(BuildContext context, String label) {

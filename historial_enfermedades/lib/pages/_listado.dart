@@ -1,12 +1,12 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:historial_enfermedades/constants/strings.dart';
 import 'package:historial_enfermedades/models/recipe.dart';
 import 'package:historial_enfermedades/pages/registro.dart';
-import 'package:historial_enfermedades/services/objectBoxHelper.dart';
+import 'package:historial_enfermedades/services/object_box_helper.dart';
 
 class ListadoPage extends StatefulWidget {
-  ListadoPage();
+  const ListadoPage();
 
   @override
   State<StatefulWidget> createState() {
@@ -37,7 +37,7 @@ class _ListadoPageStateClass extends State<ListadoPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Listado'),
+        title: const Text(AppStrings.listadoText),
         bottom: PreferredSize(
             preferredSize: Size.fromHeight(60.0),
             child: Padding(
@@ -49,7 +49,7 @@ class _ListadoPageStateClass extends State<ListadoPage> {
                   });
                 },
                 decoration: InputDecoration(
-                  hintText: 'Buscar',
+                  hintText: AppStrings.searchText,
                 ),
               
               ),
@@ -87,7 +87,7 @@ class _ListadoPageStateClass extends State<ListadoPage> {
               return ListTile(
                 subtitle: Row(
                   children: [
-                    if (recipe.img == './lib/assets/doctor.png')
+                    if (recipe.img == AppStrings.pathToDoctorImage)
                       Flexible(
                         child: Image.asset(
                           recipe.img,
@@ -111,12 +111,12 @@ class _ListadoPageStateClass extends State<ListadoPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Paciente: ${recipe.pacient}'),
+                        Text('${AppStrings.pacientLabel}: ${recipe.pacient}'),
                         Text(
                             overflow: TextOverflow.ellipsis,
-                            'Malestar: ${truncateText(recipe.discomfort, 13)}'),
-                        Text('Doctor: ${recipe.doctor}'),
-                        Text('Tel: ${recipe.phone}'),
+                            '${AppStrings.discomfortLabel}: ${truncateText(recipe.discomfort, 13)}'),
+                        Text('${AppStrings.doctorLabel}: ${recipe.doctor}'),
+                        Text('${AppStrings.phoneLabel}: ${recipe.phone}'),
                       ],
                     ),
                   ],

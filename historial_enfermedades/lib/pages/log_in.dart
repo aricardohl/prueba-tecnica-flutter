@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:historial_enfermedades/pages/listado.dart';
+import 'package:historial_enfermedades/constants/strings.dart';
+import 'package:historial_enfermedades/pages/_listado.dart';
 import 'package:historial_enfermedades/pages/widgets/errorWidget.dart';
 
 class Login extends StatefulWidget {
@@ -24,10 +25,10 @@ class _LoginPageStateClass extends State<Login> {
   String? _newPassword;
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Ingresa un email';
+      return AppStrings.emailError;
     }
     if (!emailRegex.hasMatch(value)) {
-      return 'Ingresa un email valido';
+      return AppStrings.validEmailError;
     } else {
       return null;
     }
@@ -51,35 +52,32 @@ class _LoginPageStateClass extends State<Login> {
   }
 
   Widget textFieldEmail(BuildContext context) {
-    return SizedBox(
-        width: _deviceWidth * 0.75,
+    return Center(
         child: TextField(
           maxLength: 100,
           controller: emailController,
           decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Email',
-              hintText: 'Ingresa tu email'),
+              labelText: AppStrings.labelEmail,
+              hintText: AppStrings.hintEmail),
         ));
   }
 
   Widget textFieldPassword(BuildContext context) {
-    return SizedBox(
-        width: _deviceWidth * 0.75,
+    return Center(
         child: TextField(
           maxLength: 100,
           controller: passwordController,
           obscureText: true,
           decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Contraseña',
-              hintText: 'Ingresa tu contraseña'),
+              labelText: AppStrings.labelPassword,
+              hintText: AppStrings.hintPassword),
         ));
   }
 
   Widget buttonIniciarSesion(BuildContext context) {
-    return SizedBox(
-        width: _deviceWidth * 0.75,
+    return Center(
         child: TextButton(
             style: const ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll<Color>(
@@ -88,23 +86,26 @@ class _LoginPageStateClass extends State<Login> {
               handleButtonLogin();
             },
             child:
-                Text(style: TextStyle(color: Colors.white), 'Iniciar Sesion')));
+                Text(style: TextStyle(color: Colors.white), AppStrings.logInText)));
   }
 
   bool handleButtonLogin() {
-    if (_newEmail != null && _newPassword != null) {
-      if (_newEmail == 'jhon@mail.com' && _newPassword == "77@1\$") {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => ListadoPage()));
-            return true;
-      }
-      var msg = _validateEmail(_newEmail);
-      if (msg != null) {
-        toastErrorMessage(context, msg);
-        return false;
-      }
+    if(_newEmail == null || _newEmail!.isEmpty || _newPassword == null || _newPassword!.isEmpty) {
+      toastErrorMessage(context, AppStrings.sendEmailPasswordError);
+      return false;
     }
-    return true;
+    final emailErrorMsg = _validateEmail(_newEmail);
+    if(emailErrorMsg != null) {
+      toastErrorMessage(context, emailErrorMsg);
+      return false;
+    }
+    if (_newEmail == 'jhon@mail.com' && _newPassword == "77@1\$") {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => ListadoPage()));
+    } else {
+      toastErrorMessage(context, AppStrings.mailPasswordError);
+    }
+    return false;
   }
 
 
@@ -119,18 +120,15 @@ class _LoginPageStateClass extends State<Login> {
               style: TextStyle(
                 fontSize: 30,
               ),
-              'Inicio de Sesión'),
+              AppStrings.logInText),
         ),
         body: SafeArea(
             child: Container(
           height: _deviceHeight,
           width: _deviceWidth,
-          padding: EdgeInsets.symmetric(horizontal: _deviceWidth * 0.05),
-          child: Stack(
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
+          padding: EdgeInsets.symmetric(horizontal: _deviceWidth * 0.08),
+          child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: 20),
                   textFieldEmail(context),
@@ -140,8 +138,6 @@ class _LoginPageStateClass extends State<Login> {
                   buttonIniciarSesion(context),
                 ],
               )
-            ],
-          ),
         )
       )
     );

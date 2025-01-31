@@ -1,5 +1,4 @@
 import 'package:historial_enfermedades/models/recipe.dart';
-import 'package:objectbox/objectbox.dart';
 import '../objectbox.g.dart'; // Archivo generado
 
 class ObjectBox {
@@ -14,7 +13,7 @@ class ObjectBox {
 
   static Future<ObjectBox> create() async {
     if (_instance == null) {
-      final store = await openStore(); // Abre la base de datos
+      final store = openStore();
       _instance = ObjectBox._create(store);
     }
     return _instance!;

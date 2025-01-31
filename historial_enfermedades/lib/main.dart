@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:historial_enfermedades/pages/log_in.dart';
-import 'package:historial_enfermedades/services/objectBoxHelper.dart';
+import 'package:historial_enfermedades/services/object_box_helper.dart';
 import 'package:path_provider/path_provider.dart';
 
 

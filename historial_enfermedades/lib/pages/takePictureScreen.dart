@@ -4,7 +4,6 @@ import 'package:gal/gal.dart';
 
 class TakePictureScreen extends StatefulWidget {
   
-  
   const TakePictureScreen ({super.key,});
   @override
   TakePictureScreenState createState() => TakePictureScreenState();
@@ -15,6 +14,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   List<CameraDescription> cameras = [];
   CameraController? controller;
 
+  @override
   void initState(){
     super.initState();
     _setUpCameraController();
