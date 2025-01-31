@@ -1,11 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:historial_enfermedades/models/recipe.dart';
 import 'package:historial_enfermedades/pages/listado.dart';
+import 'package:historial_enfermedades/pages/takePictureScreen.dart';
 import 'package:historial_enfermedades/pages/widgets/errorWidget.dart';
 import 'package:historial_enfermedades/services/objectBoxHelper.dart';
 
 class RegistroPage extends StatefulWidget {
-  RegistroPage();
+  final String? picturePath;
+  const RegistroPage({
+    Key? key,
+    this.picturePath,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -32,9 +39,8 @@ class _RegistroPageStateClass extends State<RegistroPage> {
   String? _newPacient;
   String? _newDoctor;
   String? _newPhone;
-  String? _newDiscomfort;
   String? _newError;
-  final String _newImg = './lib/assets/doctor.png'; // Use for path to image
+  String _newImg = './lib/assets/doctor.png'; // Use for path to image
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -56,7 +62,7 @@ class _RegistroPageStateClass extends State<RegistroPage> {
   }
 
   String _formatPhone(String phone) {
-    if(phone.length != 10) return phone;
+    if (phone.length != 10) return phone;
     return '(${phone.substring(0, 3)}) ${phone.substring(3, 6)}-${phone.substring(6)}';
   }
 
@@ -85,7 +91,6 @@ class _RegistroPageStateClass extends State<RegistroPage> {
   }
 
   void _checkPhoneRegex(phone) {
-    print(phone);
     if (phone == null || phone.length != 10) {
       _newError = 'Ingresa un telefono valido';
       toastErrorMessage(context, _newError);
@@ -95,7 +100,6 @@ class _RegistroPageStateClass extends State<RegistroPage> {
         _newError = null;
         _newPhone = _phoneController.text;
         _newPhone = _formatPhone(_newPhone!);
-        print(_newPhone);
       });
     }
   }
@@ -106,15 +110,14 @@ class _RegistroPageStateClass extends State<RegistroPage> {
     _deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Registro'),
-      ),
-      body: SingleChildScrollView(
-        child: registroView(),
-      )
-    );
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Text('Registro'),
+        ),
+        body: SingleChildScrollView(
+          child: registroView(),
+        ));
   }
 
   Widget registroView() {
@@ -168,19 +171,29 @@ class _RegistroPageStateClass extends State<RegistroPage> {
           Column(
             children: [
               TextButton(
-                style: const ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll<Color>(
-                Color.fromARGB(255, 4, 65, 116))),
-                onPressed: () => {}, // Add function to take a picture
-                child: Text( 
-                  style: const TextStyle(color: Colors.white),
-                  'Capturar Receta'
-                )
-              ),
+                  style: const ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll<Color>(
+                          Color.fromARGB(255, 4, 65, 116))),
+                  onPressed: () async {
+                    _newImg = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TakePictureScreen()));
+                  }, // Add function to take a picture
+                  child: Text(
+                      style: const TextStyle(color: Colors.white),
+                      'Capturar Receta')),
               SizedBox(height: 20),
               // Add a preview of the image
-              Image.asset(
-                './lib/assets/doctor.png',
+              if(_newImg == './lib/assets/doctor.png') Image.asset(
+                _newImg,
+                fit: BoxFit.cover,
+                width: _deviceWidth * .45,
+                height: _deviceHeight * .15,
+              ) else
+              Image.file(
+                File(_newImg),
+                fit: BoxFit.cover,
                 width: _deviceWidth * .45,
                 height: _deviceHeight * .15,
               )
@@ -217,8 +230,8 @@ class _RegistroPageStateClass extends State<RegistroPage> {
 
               if (_newError == null) {
                 ObjectBoxHelper.recipeBox.put(recipe);
-                Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => ListadoPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ListadoPage()));
               } else {
                 toastErrorMessage(context, _newError);
               }
