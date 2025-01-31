@@ -25,5 +25,7 @@ class AppStrings {
   static const takePhotoRecipe = 'Capturar receta';
   static const saveLabel = 'Guardar';
   static const fillAllFields = 'Llena todos los campos';
+
+  static const addLabel = 'Añadir';
   
 }
