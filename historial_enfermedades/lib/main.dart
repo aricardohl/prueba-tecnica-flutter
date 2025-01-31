@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:historial_enfermedades/pages/log_in.dart';
 import 'package:historial_enfermedades/services/objectBoxHelper.dart';
-import 'package:path_provider/path_provider.dart'; // Importa path_provider
+import 'package:path_provider/path_provider.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-   final directory = await getApplicationDocumentsDirectory();
+  final directory = await getApplicationDocumentsDirectory();
   WidgetsFlutterBinding.ensureInitialized();
   await ObjectBoxHelper.init(directory.path);
-  // ObjectBoxHelper.recipeBox.remove(11);  NO LO QUITE
-  ObjectBoxHelper.recipeBox.remove(12);
   runApp(const MyApp());
 }
 
