@@ -16,6 +16,7 @@ Antes de ejecutar la aplicación, asegúrate de tener instalado lo siguiente:
 ```bash
 git clone https://github.com/aricardohl/prueba-tecnica-flutter.git
 cd prueba-tecnica-flutter
+cd historial_enfermedades
 ```
 
 ## Configuración del Proyecto
