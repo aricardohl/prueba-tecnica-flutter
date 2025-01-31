@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:historial_enfermedades/constants/strings.dart';
 import 'package:historial_enfermedades/models/recipe.dart';
 import 'package:historial_enfermedades/pages/registro.dart';
+import 'package:historial_enfermedades/pages/widgets/image_widget.dart';
 import 'package:historial_enfermedades/services/object_box_helper.dart';
 
 class ListadoPage extends StatefulWidget {
@@ -39,22 +39,33 @@ class _ListadoPageStateClass extends State<ListadoPage> {
         automaticallyImplyLeading: false,
         title: const Text(AppStrings.listadoText),
         bottom: PreferredSize(
-            preferredSize: Size.fromHeight(60.0),
+            preferredSize: Size.fromHeight(50.0),
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: TextField(
+                decoration: InputDecoration(
+                  hintText: AppStrings.searchText,
+                  hintStyle: TextStyle(color: Colors.grey[500]),
+                  filled: true,
+                  fillColor: Colors.grey[300],
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  prefixIcon: Padding(
+                    padding:
+                        EdgeInsets.only(left: _deviceWidth * .30, right: 10),
+                    child: Icon(
+                      Icons.search,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 12),
+                ),
                 onChanged: (value) {
                   setState(() {
                     _searchQuery = value.toLowerCase();
                   });
                 },
-                decoration: InputDecoration(
-                  counterText: '',
-                  hintText: AppStrings.searchText,
-                ),
-              
               ),
-              
             )),
       ),
       body: listadoView(),
@@ -79,49 +90,52 @@ class _ListadoPageStateClass extends State<ListadoPage> {
             final pacient = recipe.pacient.toLowerCase();
             final doctor = recipe.doctor.toLowerCase();
             final discomfort = recipe.discomfort.toLowerCase();
-            return pacient.contains(_searchQuery) || doctor.contains(_searchQuery) || discomfort.contains(_searchQuery);
+            return pacient.contains(_searchQuery) ||
+                doctor.contains(_searchQuery) ||
+                discomfort.contains(_searchQuery);
           }).toList();
           return ListView.builder(
             itemCount: filteredRecipes.length,
             itemBuilder: (context, index) {
               final recipe = filteredRecipes[index];
-              return ListTile(
-                subtitle: Row(
-                  children: [
-                    if (recipe.img == AppStrings.pathToDoctorImage)
-                      Flexible(
-                        child: Image.asset(
-                          recipe.img,
-                          width: _deviceWidth * 0.35,
-                          height: _deviceHeight * .15,
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    else
-                      Flexible(
-                        child: Image.file(
-                          File(recipe.img),
-                          width: _deviceWidth * .35,
-                          height: _deviceHeight * .15,
-                          fit: BoxFit.cover,
+              return Column(
+                children: [
+                  ListTile(
+                    subtitle: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)
+                      ),
+                      elevation: 5,
+                      margin: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          children: [
+                            if (recipe.img == AppStrings.pathToDoctorImage)
+                              imageAsset(recipe.img, _deviceWidth, _deviceHeight)
+                            else
+                              imageFile(recipe.img, _deviceWidth, _deviceHeight),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    '${AppStrings.pacientLabel}: ${recipe.pacient}'),
+                                Text(
+                                    overflow: TextOverflow.ellipsis,
+                                    '${AppStrings.discomfortLabel}: ${truncateText(recipe.discomfort, 13)}'),
+                                Text('${AppStrings.doctorLabel}: ${recipe.doctor}'),
+                                Text('${AppStrings.phoneLabel}: ${recipe.phone}'),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                    SizedBox(
-                      width: 10,
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${AppStrings.pacientLabel}: ${recipe.pacient}'),
-                        Text(
-                            overflow: TextOverflow.ellipsis,
-                            '${AppStrings.discomfortLabel}: ${truncateText(recipe.discomfort, 13)}'),
-                        Text('${AppStrings.doctorLabel}: ${recipe.doctor}'),
-                        Text('${AppStrings.phoneLabel}: ${recipe.phone}'),
-                      ],
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               );
             },
           );
@@ -138,12 +152,13 @@ class _ListadoPageStateClass extends State<ListadoPage> {
   }
 
   Widget registerButton() {
-    return FloatingActionButton(
+    return FloatingActionButton.extended(
+      label: Text(AppStrings.addLabel),
       onPressed: () {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => RegistroPage()));
       },
-      child: Icon(Icons.add),
+      icon: Icon(Icons.add),
     );
   }
 }
